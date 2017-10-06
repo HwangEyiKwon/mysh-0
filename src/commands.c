@@ -11,11 +11,13 @@
 int do_cd(int argc, char** argv) {
   if (!validate_cd_argv(argc, argv))
     return -1;
- // const char* path = argv[1];
-  //strcpy(path, argv[1]);
- // printf("%s", path);
- // chdir(argv[1]);
-  chdir("..");
+  const char* path;
+  if(!strcmp(argv[1], "~"))
+	path = "/home/aeis";
+  else
+	path = argv[1];
+  printf("%s", path);
+  chdir(path);
   printf("cd did\n");
   return 0;
 }
