@@ -3,6 +3,8 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdio_ext.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #include "commands.h"
 
@@ -16,9 +18,7 @@ int do_cd(int argc, char** argv) {
 	path = "/home/aeis";
   else
 	path = argv[1];
-  printf("%s", path);
   chdir(path);
-  printf("cd did\n");
   return 0;
 }
 
@@ -29,35 +29,38 @@ int do_pwd(int argc, char** argv) {
   int buffer_size = 255;
   getcwd(buffer, buffer_size);
   printf("%s\n",buffer);
-  //__fpurge((FILE*)buffer);
-  //free(buffer);
-  printf("pwd did\n");
   return 0;
 }
 
 int validate_cd_argv(int argc, char** argv) {
+  int return_stat;
+  char* directory_name;
+  struct stat directory_info;
+  mode_t directory_mode;
+  //check if command is "cd ***" or not
   if(argc != 2 || (strcmp(argv[0], "cd")))
 	return 0;
+  directory_name = argv[1];
+  //check if 'directory_name' dosen't exist
+  if((return_stat = stat(directory_name, &directory_info)) == -1 && strcmp(directory_name, "~")){
+	printf("%s: not exist such directory\n",directory_name);
+	return 0;
+  }
+  directory_mode = directory_info.st_mode;
+  //check if 'directory_name' is not a directory, is a file
+  if(S_ISREG(directory_mode)){
+	printf("%s: is not a directory\n",directory_name);
+ 	return 0;
+  }
   return 1;
 }
 
 int validate_pwd_argv(int argc, char** argv) {
-  printf("%s, %d\n",argv[0], argc);
   if(argc != 1 || (strcmp(argv[0], "pwd")))
 	return 0;
   return 1;
 }
-/*
-int main() {
-  int a = 1;
-  char* b[2];
-//  b = (char**) calloc(2, sizeof(char*));
-//  b[0] = (char*) calloc(3, sizeof(char));
-//  b[1] = (char*) calloc(3, sizeof(char));
-  
-  b[0] = "cd";
-  b[1] = "..";
-  do_pwd(a, b);
-  do_cd(a, b);
-  do_pwd(a,b);
-}*/
+
+
+
+

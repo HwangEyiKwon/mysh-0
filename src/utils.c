@@ -19,11 +19,10 @@ void mysh_parse_command(const char* command,
 	strcpy(command_temp, command);
 	(*argc) = 0;
 	
-	printf("first Command: %s\n",command);
 	strptr = strchr(command_temp, ' ');	// it is used for (char**)calloc, determination of one string
 	//it trims whitespace
-	while(isspace(*command_temp)) command_temp = command_temp + 1;
-	printf("%s\n",command_temp);
+	while(isspace(*command_temp)) 
+		command_temp++;
 	//there is only blank ex)"\t" " " "\n"
 	if(*command_temp == 0){
 		*argv = (char**)calloc(1, sizeof(char*));
@@ -54,9 +53,7 @@ void mysh_parse_command(const char* command,
 			(*argc)++;
 			(*argv)[i] = (char*)calloc((command_token_len + 1), sizeof(char));
 			strcpy((*argv)[i], command_token);
-			command_token = strtok(NULL, " \t\n");
-			printf("%s, %dth\n", (*argv)[i], *argc);	
+			command_token = strtok(NULL, " \t\n");	
 		}
 	}
-	printf("Second Command: %s\n", command);
 }
