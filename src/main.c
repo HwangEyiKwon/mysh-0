@@ -4,8 +4,34 @@
 
 #include "commands.h"
 #include "utils.h"
+#include "process.h"
 
 static void release_argv(int argc, char*** argv);
+
+void mysh_process_creation(int argc, char** argv){
+	int pid;
+	int status;
+	pid = fork();
+	char* token;
+	char* path = argv[0];
+
+	token = strrchr(argv[0], '/') + 1;
+	char* arr[] = {token, argv[1], NULL};
+	printf("%s", argv[1]);
+
+	if(pid == -1){
+		fprintf(stderr, "fork() fails..\n");
+	}
+	else if(pid == 0){
+		if(argv[1] == NULL)
+			execv(path, &argv[1]);
+		else
+			execv(path, arr);
+	}
+	else{
+		wait(&status);
+	}
+}
 
 int main()
 {
@@ -30,6 +56,10 @@ int main()
       }
     } else if (strcmp(argv[0], "exit") == 0) {
       goto release_and_exit;
+    }
+      //if argv[0] is absolute path 
+      else if(strchr(argv[0], '/') || strchr(argv[0], '.')){
+      mysh_process_creation(argc, argv);
     } else {
       fprintf(stderr, "%s: command not found\n", argv[0]);
     }
