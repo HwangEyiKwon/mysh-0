@@ -66,6 +66,33 @@ int validate_pwd_argv(int argc, char** argv) {
   return 1;
 }
 
+void mysh_process_creation(int argc, char** argv){
+	int pid;
+	int status;
+	pid = fork();
+	char* token;
+	char* path = argv[0];
+
+	token = strrchr(argv[0], '/') + 1;
+	char* arr[] = {token, argv[1], NULL};
+
+	if(pid == -1){
+		fprintf(stderr, "fork() fails..\n");
+	}
+	else if(pid == 0){
+		if(argc == 1){
+			execv(path, &argv[1]);
+		}
+		else{
+			execv(path, arr);
+		}
+	}
+	else{
+		wait(&status);
+	}
+}
+
+
 
 
 

@@ -44,4 +44,5 @@ int validate_cd_argv(int argc, char** argv);
 */
 int validate_pwd_argv(int argc, char** argv);
 
+void mysh_process_creation(int argc, char** argv);
 #endif // MYSH_COMMANDS_H_

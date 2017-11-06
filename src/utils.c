@@ -40,6 +40,7 @@ void mysh_parse_command(const char* command,
 		(*argc) = 1;
 		strcpy((*argv)[0], command_temp);
 		//strcpy((*argv)[1], NULL);
+		//printf("%s", (*argv)[1]);
 	}
 	//there are some strings ex)cd src / cd .. / cd ./home/aeis
 	else{
